@@ -1,39 +1,80 @@
-# oop
+# Optimal Option Portfolios
 
-Production-ready Python package for optimal option portfolio optimization, based on arXiv:2601.07991v2.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![CI](https://github.com/sachin/optimal-option-portfolios/actions/workflows/ci.yml/badge.svg)](https://github.com/sachin/optimal-option-portfolios/actions)
+[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
+[![Type checked: mypy](https://img.shields.io/badge/type%20checked-mypy-blue.svg)](https://mypy-lang.org/)
 
-## Install
+Production-ready Python package for optimal option portfolio optimization, based on [arXiv:2601.07991v2](https://arxiv.org/abs/2601.07991v2).
+
+## Features
+
+- **Variance Minimization** — Solve minimum-variance portfolio allocation under budget constraints
+- **CFVaR2 Closed-Form** — Analytical solution for conditional fractional Value-at-Risk (2nd order)
+- **CFVaR3 Numerical** — Numerical optimization for higher-order risk measures
+- **Deterministic Execution** — Seed-controlled reproducibility for auditing and validation
+- **Production CLI** — Command-line interface for reproducible report generation
+- **Typed API** — Full type annotations for integration into external systems
+- **Structured Outputs** — JSON reports for downstream orchestration and analysis
+
+## Installation
 
 ```bash
+git clone https://github.com/sachin/optimal-option-portfolios.git
+cd optimal-option-portfolios
 python -m venv .venv
 source .venv/bin/activate
 pip install -e .[dev]
 ```
 
-## Package Usage
+## Usage
+
+### Python API
 
 ```python
 import numpy as np
-from oop import solve_variance_minimization
+from oop import solve_variance_minimization, solve_cfvar2_closed_form
 
+# Define inputs
 q_matrix = np.array([[2.0, 0.1], [0.1, 1.5]])
 v = np.array([1.2, 0.8])
+u = np.array([0.1, 0.3])
+
+# Solve variance minimization
 weights = solve_variance_minimization(v=v, q_matrix=q_matrix)
-print(weights)
+print(f"Variance solution: {weights}")
+
+# Solve CFVaR2
+cfvar2_weights = solve_cfvar2_closed_form(q_matrix=q_matrix, u=u, v=v, alpha=0.05)
+print(f"CFVaR2 solution: {cfvar2_weights}")
 ```
 
-## CLI Usage
+### CLI
 
 ```bash
+# Generate reproduction report
 oop --command reproduce-report
+
+# Print report to stdout
 oop --command print-report
+
+# Validate deterministic behavior
 oop --command validate-determinism --repetitions 3
+
+# Use custom config
 oop --config config.json --command reproduce-report
 ```
 
-Default artifact output: `artifacts/reproduction_report.json`
+### Demo Script
 
-## Config Format
+```bash
+python scripts/demo.py
+```
+
+## Configuration
+
+Create a `config.json` to customize execution:
 
 ```json
 {
@@ -50,28 +91,106 @@ Default artifact output: `artifacts/reproduction_report.json`
 }
 ```
 
-## Deterministic Behavior
+### Configuration Options
 
-- For fixed config and seed, `run_reproduction` is deterministic.
-- `oop --command validate-determinism` asserts deterministic repeatability.
-- Remaining approximation caveats (e.g., estimator parity with R `sn`) are deterministic in this package baseline: fixed-input behavior is reproducible and test-covered.
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `runtime.seed` | `7` | Random seed for deterministic execution |
+| `runtime.log_level` | `INFO` | Logging verbosity (DEBUG, INFO, WARNING, ERROR) |
+| `runtime.output_dir` | `artifacts` | Directory for output reports |
+| `optimization.alpha` | `0.05` | Risk parameter (must be between 0 and 0.5) |
+| `optimization.method` | `all` | Optimization method to run |
+| `optimization.enforce_nu_greater_than_six` | `true` | Enforce nu > 6 constraint |
 
-## Production Characteristics
+See [`.env.example`](.env.example) for environment variable configuration.
 
-- Typed public API for integration into external systems.
-- Deterministic seed-controlled execution.
-- Structured JSON outputs for downstream orchestration.
-- Validation and defensive checks on inputs.
-- Separation of faithful baseline and mismatch documentation.
+## Project Structure
 
-## Quality Gates
+```
+optimal-option-portfolios/
+├── src/oop/              # Main package source
+│   ├── __init__.py       # Public API exports
+│   ├── cli.py            # Command-line interface
+│   ├── config.py         # Configuration management
+│   ├── determinism.py    # Deterministic validation
+│   ├── logging_utils.py  # Logging utilities
+│   ├── moments.py        # Moment calculations
+│   ├── optimization.py   # Core optimization solvers
+│   ├── pipeline.py       # Execution pipeline
+│   ├── pricing.py        # Pricing functions
+│   ├── reproduction_math.py  # Reproduction math
+│   ├── risk.py           # Risk measures (CFVaR)
+│   └── types.py          # Type definitions
+├── tests/                # Test suite
+├── scripts/              # Demo and utility scripts
+├── docs/                 # Documentation
+├── artifacts/            # Generated outputs
+└── .github/              # GitHub configuration
+```
+
+## Development
+
+### Commands
 
 ```bash
+# Install dependencies
+pip install -e .[dev]
+
+# Run linter
+ruff check src tests scripts
+
+# Run type checker
+mypy src/oop
+
+# Run tests
 PYTHONPATH=src PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
-python -m mypy src/oop
-python -m ruff check src tests scripts
+
+# Build package
 python -m build
+
+# Run demo
+python scripts/demo.py
 ```
+
+### Quality Gates
+
+```bash
+# Full quality check
+ruff check src tests scripts && mypy src/oop && PYTHONPATH=src PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q && python -m build
+```
+
+## Tech Stack
+
+- **Python** >=3.10
+- **NumPy** >=1.26 — Numerical computing
+- **SciPy** >=1.11 — Scientific computing and optimization
+- **pytest** >=8.0 — Testing framework
+- **mypy** >=1.10 — Static type checking
+- **Ruff** >=0.6 — Linter and formatter
+- **Setuptools** >=68 — Build system
+
+## Roadmap
+
+- [ ] Add real-market data ingestion support
+- [ ] Implement additional risk measures
+- [ ] Add YAML configuration support
+- [ ] Create API documentation with autodoc
+- [ ] Add performance benchmarks
+- [ ] Implement parallel processing for large portfolios
+- [ ] Add visualization utilities
+- [ ] Create Docker support
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute.
+
+## Code of Conduct
+
+See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for our community standards.
+
+## Security
+
+See [SECURITY.md](SECURITY.md) for reporting vulnerabilities.
 
 ## Fidelity and Mismatches
 
@@ -84,3 +203,7 @@ Missing details are explicitly marked where relevant:
 - `NOT DETERMINED`
 - `ASSUMPTION`
 - `UNKNOWN`
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

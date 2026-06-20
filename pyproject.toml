@@ -8,16 +8,52 @@ version = "0.2.0"
 description = "Production-ready optimal option portfolio optimizer (paper-faithful baseline + extensible package API)."
 readme = "README.md"
 requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+  {name = "Sachin"}
+]
+keywords = [
+  "portfolio-optimization",
+  "option-pricing",
+  "risk-management",
+  "cvar",
+  "quantitative-finance",
+  "optimization",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Financial and Insurance Industry",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Office/Business :: Financial",
+  "Topic :: Scientific/Engineering :: Mathematics",
+  "Typing :: Typed",
+]
 dependencies = [
   "numpy>=1.26",
   "scipy>=1.11",
 ]
+
+[project.urls]
+Homepage = "https://github.com/sachin/optimal-option-portfolios"
+Repository = "https://github.com/sachin/optimal-option-portfolios"
+Issues = "https://github.com/sachin/optimal-option-portfolios/issues"
+Changelog = "https://github.com/sachin/optimal-option-portfolios/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 dev = [
   "pytest>=8.0",
   "mypy>=1.10",
   "ruff>=0.6",
+]
+docs = [
+  "sphinx>=7.0",
+  "sphinx-rtd-theme>=2.0",
 ]
 
 [project.scripts]
