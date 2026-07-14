@@ -24,7 +24,7 @@ Yes. The package includes:
 ### How do I install the package?
 
 ```bash
-git clone https://github.com/sachin/optimal-option-portfolios.git
+git clone https://github.com/sachncs/optimal-option-portfolios.git
 cd optimal-option-portfolios
 python -m venv .venv
 source .venv/bin/activate
@@ -155,6 +155,6 @@ source .venv/bin/activate
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/sachin/optimal-option-portfolios/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/sachin/optimal-option-portfolios/discussions)
+- **Issues**: [GitHub Issues](https://github.com/sachncs/optimal-option-portfolios/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/sachncs/optimal-option-portfolios/discussions)
 - **Security**: See [SECURITY.md](../SECURITY.md)

@@ -54,7 +54,7 @@ When using this package:
 This security policy applies to:
 
 - The `oop` Python package
-- Official GitHub repository: `sachin/optimal-option-portfolios`
+- Official GitHub repository: `sachncs/optimal-option-portfolios`
 - Documentation and examples in this repository
 
 ## Recognition

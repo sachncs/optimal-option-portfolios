@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
-  {name = "Sachin"}
+  {name = "Sachin <sachncs@gmail.com>"}
 ]
 keywords = [
   "portfolio-optimization",
@@ -40,10 +40,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/sachin/optimal-option-portfolios"
-Repository = "https://github.com/sachin/optimal-option-portfolios"
-Issues = "https://github.com/sachin/optimal-option-portfolios/issues"
-Changelog = "https://github.com/sachin/optimal-option-portfolios/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/sachncs/optimal-option-portfolios"
+Repository = "https://github.com/sachncs/optimal-option-portfolios"
+Issues = "https://github.com/sachncs/optimal-option-portfolios/issues"
+Changelog = "https://github.com/sachncs/optimal-option-portfolios/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 dev = [

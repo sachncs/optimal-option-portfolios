@@ -28,7 +28,7 @@ This project adheres to our [Code of Conduct](CODE_OF_CONDUCT.md). By participat
    ```
 3. **Add upstream remote**:
    ```bash
-   git remote add upstream https://github.com/sachin/optimal-option-portfolios.git
+   git remote add upstream https://github.com/sachncs/optimal-option-portfolios.git
    ```
 4. **Create a feature branch** from `main`
 

@@ -12,7 +12,7 @@ This guide will help you get started with the Optimal Option Portfolios package.
 ### From Source (Recommended)
 
 ```bash
-git clone https://github.com/sachin/optimal-option-portfolios.git
+git clone https://github.com/sachncs/optimal-option-portfolios.git
 cd optimal-option-portfolios
 python -m venv .venv
 source .venv/bin/activate
