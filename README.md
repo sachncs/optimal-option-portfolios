@@ -1,12 +1,21 @@
-# Optimal Option Portfolios
+<p align="center">
+  <h1 align="center">Optimal Option Portfolios</h1>
+  <p align="center">Production-ready option portfolio optimization with variance minimization and CFVaR2 closed-form solutions.</p>
+  <p align="center">
+    <a href="#installation"><img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue" alt="Python"></a>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
+    <a href="https://github.com/sachncs/optimal-option-portfolios/actions"><img src="https://img.shields.io/github/actions/workflow/status/sachncs/optimal-option-portfolios/ci.yml?branch=master" alt="CI"></a>
+    <a href="https://pypi.org/project/oop/"><img src="https://img.shields.io/pypi/v/oop" alt="PyPI"></a>
+    <a href="https://github.com/sachncs/optimal-option-portfolios/stargazers"><img src="https://img.shields.io/github/stars/sachncs/optimal-option-portfolios" alt="Stars"></a>
+    <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/badge/code%20style-ruff-000000.svg" alt="Ruff"></a>
+    <a href="https://mypy-lang.org/"><img src="https://img.shields.io/badge/type%20checked-mypy-blue.svg" alt="mypy"></a>
+  </p>
+</p>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![CI](https://github.com/sachncs/optimal-option-portfolios/actions/workflows/ci.yml/badge.svg)](https://github.com/sachncs/optimal-option-portfolios/actions)
-[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
-[![Type checked: mypy](https://img.shields.io/badge/type%20checked-mypy-blue.svg)](https://mypy-lang.org/)
+Production-ready Python package for optimal option portfolio optimization,
+based on [arXiv:2601.07991v2](https://arxiv.org/abs/2601.07991v2).
 
-Production-ready Python package for optimal option portfolio optimization, based on [arXiv:2601.07991v2](https://arxiv.org/abs/2601.07991v2).
+---
 
 ## Features
 
@@ -18,7 +27,17 @@ Production-ready Python package for optimal option portfolio optimization, based
 - **Typed API** — Full type annotations for integration into external systems
 - **Structured Outputs** — JSON reports for downstream orchestration and analysis
 
+---
+
 ## Installation
+
+### From PyPI
+
+```bash
+pip install oop
+```
+
+### From source
 
 ```bash
 git clone https://github.com/sachncs/optimal-option-portfolios.git
@@ -28,7 +47,25 @@ source .venv/bin/activate
 pip install -e .[dev]
 ```
 
-## Usage
+---
+
+## Quick Start
+
+### CLI
+
+```bash
+# Generate reproduction report
+oop --command reproduce-report
+
+# Print report to stdout
+oop --command print-report
+
+# Validate deterministic behavior
+oop --command validate-determinism --repetitions 3
+
+# Use custom config
+oop --config config.json --command reproduce-report
+```
 
 ### Python API
 
@@ -50,27 +87,13 @@ cfvar2_weights = solve_cfvar2_closed_form(q_matrix=q_matrix, u=u, v=v, alpha=0.0
 print(f"CFVaR2 solution: {cfvar2_weights}")
 ```
 
-### CLI
-
-```bash
-# Generate reproduction report
-oop --command reproduce-report
-
-# Print report to stdout
-oop --command print-report
-
-# Validate deterministic behavior
-oop --command validate-determinism --repetitions 3
-
-# Use custom config
-oop --config config.json --command reproduce-report
-```
-
 ### Demo Script
 
 ```bash
 python scripts/demo.py
 ```
+
+---
 
 ## Configuration
 
@@ -91,18 +114,56 @@ Create a `config.json` to customize execution:
 }
 ```
 
-### Configuration Options
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `runtime.seed` | `7` | Random seed for deterministic execution |
-| `runtime.log_level` | `INFO` | Logging verbosity (DEBUG, INFO, WARNING, ERROR) |
-| `runtime.output_dir` | `artifacts` | Directory for output reports |
-| `optimization.alpha` | `0.05` | Risk parameter (must be between 0 and 0.5) |
-| `optimization.method` | `all` | Optimization method to run |
-| `optimization.enforce_nu_greater_than_six` | `true` | Enforce nu > 6 constraint |
+| Parameter | Env Variable | Default | Description |
+|-----------|--------------|---------|-------------|
+| `runtime.seed` | `OOP_SEED` | `7` | Random seed for deterministic execution |
+| `runtime.log_level` | `OOP_LOG_LEVEL` | `INFO` | Logging verbosity (DEBUG, INFO, WARNING, ERROR) |
+| `runtime.output_dir` | `OOP_OUTPUT_DIR` | `artifacts` | Directory for output reports |
+| `optimization.alpha` | — | `0.05` | Risk parameter (must be between 0 and 0.5) |
+| `optimization.method` | — | `all` | Optimization method to run |
+| `optimization.enforce_nu_greater_than_six` | — | `true` | Enforce nu > 6 constraint |
 
 See [`.env.example`](.env.example) for environment variable configuration.
+
+---
+
+## API
+
+| Symbol | Type | Description |
+|--------|------|-------------|
+| `solve_variance_minimization` | function | Closed-form QP for the minimum-variance portfolio |
+| `solve_cfvar2_closed_form` | function | Closed-form QP for 2nd-order CFVaR |
+| `solve_cfvar3_numerical` | function | Iterative solver for 3rd-order (and higher) CFVaR |
+| `PipelineConfig` | dataclass | Runtime + optimization configuration object |
+| `ReproductionReport` | dataclass | Structured JSON-serialisable report |
+| `DeterminismValidator` | class | Validates deterministic execution across runs |
+| `main` | function | CLI entry point (`oop`) |
+
+---
+
+## Examples
+
+```bash
+# 1. Run the canonical reproduction and write artifacts to the default dir.
+oop --command reproduce-report
+
+# 2. Print the same report to stdout for inspection.
+oop --command print-report
+
+# 3. Confirm three consecutive runs produce identical output.
+oop --command validate-determinism --repetitions 3
+
+# 4. Re-run the reproduction with a different alpha and output dir.
+oop --config config.json --command reproduce-report
+```
+
+A runnable end-to-end demo is provided:
+
+```bash
+python scripts/demo.py
+```
+
+---
 
 ## Project Structure
 
@@ -128,9 +189,9 @@ optimal-option-portfolios/
 └── .github/              # GitHub configuration
 ```
 
-## Development
+---
 
-### Commands
+## Development
 
 ```bash
 # Install dependencies
@@ -159,15 +220,46 @@ python scripts/demo.py
 ruff check src tests scripts && mypy src/oop && PYTHONPATH=src PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q && python -m build
 ```
 
+---
+
+## Testing
+
+```bash
+PYTHONPATH=src PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
+PYTHONPATH=src PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest --cov=oop
+```
+
+---
+
+## Build
+
+```bash
+python -m build
+```
+
+---
+
+## Release
+
+Version is bumped in `pyproject.toml`, the changelog is updated in
+`CHANGELOG.md`, a `vX.Y.Z` tag is cut, and the PyPI publishing workflow
+publishes the source and wheel distributions. See
+[docs/release.md](docs/release.md) for the full process.
+
+---
+
 ## Tech Stack
 
-- **Python** >=3.10
-- **NumPy** >=1.26 — Numerical computing
-- **SciPy** >=1.11 — Scientific computing and optimization
-- **pytest** >=8.0 — Testing framework
-- **mypy** >=1.10 — Static type checking
-- **Ruff** >=0.6 — Linter and formatter
-- **Setuptools** >=68 — Build system
+| Category | Technology |
+|----------|------------|
+| Language | Python >= 3.10 |
+| Numerical | [NumPy](https://numpy.org/) >= 1.26, [SciPy](https://scipy.org/) >= 1.11 |
+| Testing | [pytest](https://docs.pytest.org/) >= 8.0 |
+| Type Check | [mypy](https://mypy-lang.org/) >= 1.10 |
+| Lint/Format | [Ruff](https://docs.astral.sh/ruff/) >= 0.6 |
+| Build | [Setuptools](https://setuptools.pypa.io/) >= 68 |
+
+---
 
 ## Roadmap
 
@@ -180,6 +272,23 @@ ruff check src tests scripts && mypy src/oop && PYTHONPATH=src PYTEST_DISABLE_PL
 - [ ] Add visualization utilities
 - [ ] Create Docker support
 
+---
+
+## Fidelity and Mismatches
+
+- [Fidelity report](docs/fidelity_report.md)
+- [Mismatch report](docs/mismatch_report.md)
+- [Determination notes](docs/research_determination.md)
+- [Release process](docs/release.md)
+
+Missing details are explicitly marked where relevant:
+
+- `NOT DETERMINED`
+- `ASSUMPTION`
+- `UNKNOWN`
+
+---
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute.
@@ -191,18 +300,6 @@ See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for our community standards.
 ## Security
 
 See [SECURITY.md](SECURITY.md) for reporting vulnerabilities.
-
-## Fidelity and Mismatches
-
-- [Fidelity report](docs/fidelity_report.md)
-- [Mismatch report](docs/mismatch_report.md)
-- [Determination notes](docs/research_determination.md)
-- [Release process](docs/release.md)
-
-Missing details are explicitly marked where relevant:
-- `NOT DETERMINED`
-- `ASSUMPTION`
-- `UNKNOWN`
 
 ## License
 
